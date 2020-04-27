@@ -22,3 +22,16 @@
   align-items: center;
   font-size: 50px;
 }
+.app {
+  display: flex;
+}
+.papa {
+  border: 1px solid red;
+  margin: 10px;
+  padding: 10px;
+}
+.son {
+  border: 1px solid black;
+  margin: 10px;
+  padding: 10px;
+}

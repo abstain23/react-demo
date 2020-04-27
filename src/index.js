@@ -1,75 +1,91 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import {createStore} from 'redux'
+import {Provider, connect} from 'react-redux'
 
-
-const Cell = (props) => {
-  // const [n, steN] = React.useState('');
-  // const handleClick = () => {
-  //   props.onClick()
-  // };
-  return (
-    <div className="cell" onClick={props.onClick}>
-      {props.text}
-    </div>
-  );
-};
-
-const tell = (cells) => {
-  for(let i=0;i<3;i++) {
-    if(cells[i][0] === cells[i][1] && cells[i][1] === cells[i][2] && cells[i][0] !== null) {
-      return true
-    }
+const reducer = (state, action) => {
+  console.log('reducer')
+  if(!state) {
+    return {n: 0}
   }
+  if(action.type === 'add') {
+    const newSate = {n:state.n + action.payload}
+    return newSate
+  } else {
+    return state
+  }
+}
 
-  for(let i=0;i<3;i++) {
-    if(cells[0][i] === cells[1][i] && cells[0][i] === cells[2][i] && cells[0][i] !== null) {
-      return true
-    }
-  }
+const store = createStore(reducer)
 
-  if(cells[0][0] === cells[1][1] && cells[1][1] === cells[2][2] && cells[0][0] !== null) {
-    return true
+
+class Son extends React.Component {
+  render() {
+    console.log(this.props)
+    return (
+      <div>
+        son --- 
+      </div>
+    )
   }
-  if(cells[0][2] === cells[1][1] && cells[1][1] === cells[2][0] && cells[0][2] !== null) {
-    return true
+}
+
+class App extends React.Component {
+  render() {
+    console.log(this.props)
+    return (
+      <div >
+        App -- {this.props.n}
+        <hr/>
+        <Son />
+        <hr/>
+        <button onClick={() => this.props.add(3)}>+ 1</button>
+        <button onClick={() => {
+          console.log('x')
+          this.props.n += 3
+          }}>test</button>
+      </div>
+    )
   }
-  return false
 }
 
 
-const Wrapper = () => {
-  // const [text, setText] = React.useState('')
-  const [cells , setCell] = React.useState([
-    [null, null, null],
-    [null, null, null],
-    [null, null, null]
-  ]) 
-  const [n, setN] = React.useState(0)
-  const [flag, setFlag] = React.useState(false)
-  const handleCellClick = (row,col) => {
-    // console.log('行'+ row)
-    // console.log('列'+ col)
-    setN(n + 1)
-    // console.log(n)
-    const deppCopyCell = JSON.parse(JSON.stringify(cells))
-    deppCopyCell[row][col] = n % 2 === 0 ? 'x' : 'o'
-    setCell(deppCopyCell)
-    setFlag(tell(deppCopyCell))
-    // console.log(flag)
+const mapStateToProps = (state) => {
+  return {
+    n: state.n
   }
-  return (
-    <div className='wrapper'>
-      {cells.map((items, row) => {
-        return (
-          <div className='row' key={row}>
-            {items.map((item, col) => <Cell key={col} text={item} onClick= {() => handleCellClick(row, col)}/>)}
-          </div>
-        )
-      })}
-      {flag && <div className='game-over'>游戏结束</div>}
-    </div>
+}
+
+// const mapDIspatchToProps = () => {
+//   return {
+//     add: () => {
+//       console.log('add')
+//       return {type:'add', payload: 1}
+//     }
+//   }
+// }
+
+const mapDIspatchToProps = {
+      add: (payload =1) => {
+        console.log('add')
+        return {type:'add', payload}
+      }
+  }
+//connect连接React组件和Redux store，返回一个新的组件，这个组件放到provider里面后没，之前的App组件就可以通过props使用store
+const App2 = connect(mapStateToProps, mapDIspatchToProps)(App)
+
+const render = () => {
+  //Provider实现store的全局访问，将store传给每个组件
+  ReactDOM.render(
+   <Provider store={store}>
+      <App2 />
+   </Provider>,
+    document.getElementById('root')
   )
 }
+render()
 
-ReactDOM.render(<Wrapper />, document.getElementById('root'));
+// store.subscribe(() => {
+//   console.log('subscribe')
+//   render()
+// })
