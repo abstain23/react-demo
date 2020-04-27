@@ -16,7 +16,7 @@ const reducer = (state, action) => {
   }
 }
 
-const store = createStore(reducer) //reducer就是用来修改新的state
+const store = createStore(reducer) //reducer就是根据旧的state生成存的state
 
 
 class Son extends React.Component {
