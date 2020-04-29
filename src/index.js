@@ -1,72 +1,46 @@
-import React from 'react'
+import React,{useState} from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
-
-const ThemeContext = React.createContext()
 
 
-function Box(props) {
-  console.log(props.children)
-  return (
-  <div className={`${props.theme}`}>{props.children}</div>
+
+function App() {
+  console.log('app 被render了')
+  const [count, setCount] = useState(0)
+  const [studentInfo, setStudentInfo] = useState({name: '小文', age: 18, gender: '女'})
+  const handleClick = () => {
+    setCount(preCount => {
+      console.log(preCount)
+      return preCount += 1
+    })
+  }
+  const handleClick2 = () => {
+    setStudentInfo(old => {
+      console.log(old)
+      return {
+        ...old,
+        age: 22
+      }
+    })
+  }
+  const handleClick3 = () => {
+    setTimeout(() => {
+      alert('You clicked on: ' + count)
+    }, 3000)
+  }
+  return(
+    <div>app
+      <p>{count}</p>
+      <p>{`${studentInfo.name}--- ${studentInfo.age} --- ${studentInfo.gender}`}</p>
+      <button onClick={handleClick}>click</button>
+      <button onClick={handleClick2}>click</button>
+      <hr />
+      <button onClick={() => setCount(count + 1)}>sync  click</button>
+      <button onClick={() => handleClick3()}>async  click</button>
+    </div>
   )
 }
 
-function Button() {
-  return (
-    <button>+1</button>
-  )
-}
-
-function Input() {
-  return (
-    <input></input>
-  )
-}
-
-class App extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      theme: 'red'
-    }
-  }
-  change() {
-    if(this.state.theme === 'red') {
-      this.setState({
-        theme: 'green'
-      })
-    } else {
-      this.setState({
-        theme: 'red'
-      })
-    }
-  }
-  render() {
-    return (
-      <ThemeContext.Provider value={this.state.theme}>
-        <button onClick={this.change.bind(this)}>change theme</button>
-        <div>
-          <ThemeContext.Consumer>
-            {(theme) => (
-              <div>
-              <Box theme={theme}>
-                <Button></Button>
-              </Box>
-              <Box theme={theme}>
-                <Input></Input>
-              </Box>
-              </div>
-          )}
-          </ThemeContext.Consumer>
-        </div>
-      </ThemeContext.Provider>
-    )
-  }
-}
-
-
-
-
-
-ReactDOM.render(<App/>, document.getElementById('root'))
+ReactDOM.render(
+  <App/>,
+  document.getElementById('root')
+)

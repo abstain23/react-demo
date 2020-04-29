@@ -24,6 +24,7 @@
 }
 .app {
   display: flex;
+  border: 1px solid red;
 }
 .papa {
   border: 1px solid red;
