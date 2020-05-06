@@ -1,72 +1,75 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import './index.css'
-
-const ThemeContext = React.createContext()
-
-
-function Box(props) {
-  console.log(props.children)
-  return (
-  <div className={`${props.theme}`}>{props.children}</div>
-  )
-}
-
-function Button() {
-  return (
-    <button>+1</button>
-  )
-}
-
-function Input() {
-  return (
-    <input></input>
-  )
-}
+import {render} from 'react-dom'
 
 class App extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-      theme: 'red'
+      time: new Date().toLocaleString(),
+      count:10
     }
   }
-  change() {
-    if(this.state.theme === 'red') {
-      this.setState({
-        theme: 'green'
-      })
-    } else {
-      this.setState({
-        theme: 'red'
-      })
-    }
-  }
+  inputRef = React.createRef()
   render() {
+    console.log('render')
     return (
-      <ThemeContext.Provider value={this.state.theme}>
-        <button onClick={this.change.bind(this)}>change theme</button>
-        <div>
-          <ThemeContext.Consumer>
-            {(theme) => (
-              <div>
-              <Box theme={theme}>
-                <Button></Button>
-              </Box>
-              <Box theme={theme}>
-                <Input></Input>
-              </Box>
-              </div>
-          )}
-          </ThemeContext.Consumer>
-        </div>
-      </ThemeContext.Provider>
+      <div>
+        <Son/>
+        <p ref={ele => this.ppRef = ele}>{this.state.time}</p>
+      <p>{this.state.count}</p>
+      <button onClick={() => this.setState({
+        count: this.state.count + 1
+      })}>+1</button>
+      <div type="text" ref={this.inputRef}>111</div>
+      </div>
+    )
+  }
+  componentWillMount() {
+    console.log('will')
+    // setTimeout(()=>{
+      this.setState({
+        count: this.state.count + 1
+      },()=>console.log('will2'))
+    // }, 1000)
+  }
+  componentDidMount() {
+    console.log('didmount')
+    this.setState({
+      count: this.state.count + 1
+    })
+    setInterval(()=>{
+      // this.setState({
+      //   time: new Date().toLocaleString()
+      // })
+      // this.refs.pp.innerHTML = new Date().toLocaleString()
+      this.ppRef.innerHTML = new Date().toLocaleString()
+      console.log(this.inputRef)
+    },1000)
+  }
+}
+class Son extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+    console.log('cons')
+  }
+  componentWillMount() {
+    console.log('son wil')
+  }
+  componentDidMount() {
+    console.log('son mount')
+  }
+  componentWillReceiveProps() {
+    console.log('willreceive')
+  }
+  render () {
+    console.log('son render')
+    return (
+      <div>son</div>
     )
   }
 }
-
-
-
-
-
-ReactDOM.render(<App/>, document.getElementById('root'))
+render((
+  <App>
+  </App>
+), document.getElementById('root'))
